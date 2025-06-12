@@ -392,7 +392,7 @@ return (
         </div>
       </section>
 
-      {/* FOOTER */}
+{/* FOOTER */}
 <footer className='bg-[#F7A8B8] text-[#4B2E2E] px-6 py-10 mt-16'>
   <div className='max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6 items-center'>
     <div className='flex items-center gap-2'>
@@ -410,18 +410,19 @@ return (
       </div>
     </div>
     <div className='text-right text-sm'>
-      <p>"Tu belleza, tu esencia, tu poder."</p>
-      <p>"Cada producto refleja quién eres."</p>
+      <p>&quot;Tu belleza, tu esencia, tu poder.&quot;</p>
+      <p>&quot;Cada producto refleja quién eres.&quot;</p>
       <p className='mt-2'>&copy; 2025 Coqueta by Nicolle. Todos los derechos reservados.</p>
     </div>
   </div>
 </footer>
 
+
 {mostrarCarrito && (
-  <div className="fixed inset-0 z-50">
+  <div className='fixed inset-0 z-50'>
     {/* Fondo semitransparente que no bloquea visión */}
     <div
-  className="absolute inset-0 bg-transparent backdrop-blur-sm"
+  className='absolute inset-0 bg-transparent backdrop-blur-sm'
   onClick={() => setMostrarCarrito(false)}
 />
 
