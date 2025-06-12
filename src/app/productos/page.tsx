@@ -5,9 +5,21 @@ import { useEffect, useState } from 'react';
 import { db } from '@/lib/firebase';
 import { doc, getDoc } from 'firebase/firestore';
 
+interface Producto {
+  id: string;
+  nombre: string;
+  descripcion: string;
+  precio: number;
+  stock: number;
+  imagenes: string[];
+  video?: string;
+  categoria?: string;
+  subcategoria?: string;
+}
+
 export default function ProductoPage() {
   const { id } = useParams();
-  const [producto, setProducto] = useState<any>(null);
+  const [producto, setProducto] = useState<Producto | null>(null);
   const [nombreCategoria, setNombreCategoria] = useState('');
   const [media, setMedia] = useState<(string | { video: string })[]>([]);
   const [mediaIndex, setMediaIndex] = useState(0);
@@ -27,14 +39,10 @@ export default function ProductoPage() {
           return;
         }
 
-        const data = snap.data();
-        console.log('✅ Producto:', data);
+        const data = snap.data() as Producto;
 
-        // Cargar imágenes y video
         const imagenes = Array.isArray(data.imagenes)
-          ? data.imagenes.filter(
-              (url: any) => typeof url === 'string' && url.trim() !== ''
-            )
+          ? data.imagenes.filter((url) => typeof url === 'string' && url.trim() !== '')
           : [];
 
         const medios: (string | { video: string })[] = [...imagenes];
@@ -46,13 +54,12 @@ export default function ProductoPage() {
         setProducto(data);
         setMedia(medios);
 
-        // Obtener nombre de categoría desde Firestore
         if (data.categoria) {
           try {
             const catRef = doc(db, 'categorias', data.categoria);
             const catSnap = await getDoc(catRef);
             setNombreCategoria(
-              catSnap.exists() ? catSnap.data().nombre || data.categoria : data.categoria
+              catSnap.exists() ? (catSnap.data().nombre as string) || data.categoria : data.categoria
             );
           } catch (e) {
             console.warn('⚠️ Error al obtener categoría:', e);
@@ -69,13 +76,13 @@ export default function ProductoPage() {
 
   const mediaActual = media[mediaIndex] ?? null;
 
-  const esImagen =
-    typeof mediaActual === 'string' && mediaActual?.trim() !== '';
+  const esImagen = typeof mediaActual === 'string' && mediaActual.trim() !== '';
   const esVideo =
     typeof mediaActual === 'object' &&
     mediaActual !== null &&
-    typeof (mediaActual as { video?: string }).video === 'string' &&
-    (mediaActual as { video: string }).video.trim() !== '';
+    'video' in mediaActual &&
+    typeof mediaActual.video === 'string' &&
+    mediaActual.video.trim() !== '';
 
   if (!producto) return <p className="p-4 font-roboto bg-black text-white">Cargando...</p>;
 
