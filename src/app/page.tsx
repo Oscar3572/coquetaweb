@@ -304,21 +304,20 @@ return (
 
 </section>
 
-
-      {/* CLIENTAS Y CONTACTO */}
+{/* CLIENTAS Y CONTACTO */}
 <section id='contacto' className='px-6 py-16 bg-[#FDE9EF] text-[#4B2E2E]'>
   <h2 className='text-3xl font-bold text-center mb-8'>Lo que nuestras clientas dicen</h2>
   <div className='grid grid-cols-1 md:grid-cols-3 gap-6'>
     <div className='bg-white p-4 rounded-lg shadow-md'>
-      <p>'Desde que uso los productos de Coqueta, me siento más segura y hermosa cada día.'</p>
+      <p>&apos;Desde que uso los productos de Coqueta, me siento más segura y hermosa cada día.&apos;</p>
       <span className='block text-right mt-2 font-semibold'>– Mariana</span>
     </div>
     <div className='bg-white p-4 rounded-lg shadow-md'>
-      <p>'¡Me fascinan los labiales! Colores intensos, buena duración y huelen delicioso.'</p>
+      <p>&apos;¡Me fascinan los labiales! Colores intensos, buena duración y huelen delicioso.&apos;</p>
       <span className='block text-right mt-2 font-semibold'>– Camila</span>
     </div>
     <div className='bg-white p-4 rounded-lg shadow-md'>
-      <p>'Excelente atención, productos de calidad y entrega rápida. ¡Gracias, Coqueta!'</p>
+      <p>&apos;Excelente atención, productos de calidad y entrega rápida. ¡Gracias, Coqueta!&apos;</p>
       <span className='block text-right mt-2 font-semibold'>– Laura</span>
     </div>
   </div>
