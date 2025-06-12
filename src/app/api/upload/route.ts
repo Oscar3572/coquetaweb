@@ -1,12 +1,12 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import cloudinary from '@/lib/cloudinary';
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
   try {
     const data = await req.formData();
-    const file = data.get('file') as File;
+    const file = data.get('file');
 
-    if (!file) {
+    if (!(file instanceof File)) {
       return NextResponse.json({ error: 'No file received' }, { status: 400 });
     }
 
@@ -22,8 +22,9 @@ export async function POST(req: Request) {
     });
 
     return NextResponse.json(result);
-  } catch (error: any) {
+  } catch (error) {
     console.error('Cloudinary Error:', error);
-    return NextResponse.json({ error: error.message || 'Cloudinary upload failed' }, { status: 500 });
+    const message = error instanceof Error ? error.message : 'Cloudinary upload failed';
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }
