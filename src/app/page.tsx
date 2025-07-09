@@ -333,7 +333,7 @@ return (
 <div className='text-center mt-10'>
   <p className='mb-3'>¿Tienes dudas o deseas un producto personalizado?</p>
   <a
-    href='https://wa.me/50235724563'
+    href='https://wa.me/50234850804'
     target='_blank'
     rel='noopener noreferrer'
     className='inline-block bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded-full shadow-md text-lg font-semibold transition-all'
@@ -369,7 +369,7 @@ return (
 
 {/* TikTok */}
 <a
-  href='https://www.tiktok.com/@coquetabynicolle?._t=ZM-8x8NAdba62X&_r=1'
+  href='https://www.tiktok.com/@nicolle_by_coqueta?_t=ZM-8xsBzFqr7A5&_r=1'
   target='_blank'
   rel='noopener noreferrer'
   aria-label='TikTok'
