@@ -27,7 +27,7 @@ export default function HomePage() {
   const [mediaIndex, setMediaIndex] = useState(0);
   const [carrito, setCarrito] = useState<{ producto: Producto, cantidad: number }[]>([]);
   const [mostrarCarrito, setMostrarCarrito] = useState(false);
-
+  const [imagenZoom, setImagenZoom] = useState<string | null>(null);
 
 useEffect(() => {
   const fetchProductos = async () => {
@@ -192,9 +192,15 @@ return (
             if (productoActivo.video) media.push(productoActivo.video);
             const current = media[mediaIndex] || '';
             return current.includes('mp4') ? (
-              <video controls src={current} className='w-full h-full object-cover rounded' />
+              <video controls src={current} className='w-full h-full object-contain rounded' />
             ) : (
-              <img src={current} alt='media' className='w-full h-full object-cover rounded' />
+              <img
+  src={current}
+  alt='media'
+  className='w-full h-full object-contain rounded transition-transform duration-300 hover:scale-110 cursor-zoom-in'
+  onClick={() => setImagenZoom(current)}
+/>
+
             );
           })()}
         </div>
@@ -511,6 +517,19 @@ return (
     </div>
   </div>
 )}
+{imagenZoom && (
+  <div
+    className="fixed inset-0 bg-black bg-opacity-70 backdrop-blur-sm flex items-center justify-center z-50"
+    onClick={() => setImagenZoom(null)}
+  >
+    <img
+      src={imagenZoom}
+      alt="Zoom"
+      className="max-w-full max-h-full rounded-lg shadow-lg border border-white"
+    />
+  </div>
+)}
+
     </div>
   );
 }
