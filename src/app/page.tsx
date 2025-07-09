@@ -290,7 +290,7 @@ return (
   </button>
 
 <a
-  href={`https://wa.me/50235724563?text=Hola%2C%20me%20interesa%20el%20producto%20${encodeURIComponent(productoActivo.nombre)}%20a%20Q${productoActivo.precio}`}
+  href={`https://wa.me/50234850804?text=Hola%2C%20me%20interesa%20el%20producto%20${encodeURIComponent(productoActivo.nombre)}%20a%20Q${productoActivo.precio}`}
   target='_blank'
   rel='noopener noreferrer'
   className='bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded-full text-sm font-medium'
@@ -382,7 +382,7 @@ return (
 
 {/* WhatsApp */}
 <a
-  href='https://wa.me/50235724563'
+  href='https://wa.me/50234850804'
   target='_blank'
   rel='noopener noreferrer'
   aria-label='WhatsApp'
@@ -486,7 +486,7 @@ return (
 
             {/* ENVIAR POR WHATSAPP */}
 <a
-  href={`https://wa.me/50235724563?text=${encodeURIComponent(
+  href={`https://wa.me/50234850804?text=${encodeURIComponent(
     `Hola 👋, quiero hacer un pedido con los siguientes productos:\n\n` +
     carrito
       .map(
