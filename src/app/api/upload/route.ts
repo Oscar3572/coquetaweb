@@ -3,28 +3,41 @@ import cloudinary from '@/lib/cloudinary';
 
 export async function POST(req: NextRequest) {
   try {
-    const data = await req.formData();
-    const file = data.get('file');
+    const formData = await req.formData();
 
-    if (!(file instanceof File)) {
-      return NextResponse.json({ error: 'No file received' }, { status: 400 });
+    const archivos = Array.from(formData.entries()).filter(([_, value]) => value instanceof File);
+
+    if (archivos.length === 0) {
+      return NextResponse.json({ error: 'No se recibieron archivos válidos' }, { status: 400 });
     }
 
-    // Convertir a base64
-    const bytes = await file.arrayBuffer();
-    const buffer = Buffer.from(bytes);
-    const base64 = buffer.toString('base64');
-    const mime = file.type;
-    const dataURI = `data:${mime};base64,${base64}`;
+    const uploads = await Promise.all(
+      archivos.map(async ([key, archivo]) => {
+        const file = archivo as File;
+        const arrayBuffer = await file.arrayBuffer();
+        const buffer = Buffer.from(arrayBuffer);
+        const base64 = buffer.toString('base64');
+        const dataURI = `data:${file.type};base64,${base64}`;
 
-    const result = await cloudinary.uploader.upload(dataURI, {
-      folder: 'productos_coqueta',
-    });
+        const resourceType = file.type.startsWith('video/') ? 'video' : 'image';
 
-    return NextResponse.json(result);
+        const resultado = await cloudinary.uploader.upload(dataURI, {
+          folder: 'productos_coqueta',
+          resource_type: resourceType,
+          upload_preset: 'ml_default', // opcional, según tu configuración en Cloudinary
+        });
+
+        return resultado.secure_url;
+      })
+    );
+
+    return NextResponse.json({ urls: uploads }, { status: 200 });
   } catch (error) {
-  const err = error as Error;
-  console.error('Cloudinary Error:', err);
-  return NextResponse.json({ error: err.message || 'Cloudinary upload failed' }, { status: 500 });
-}
+    const err = error as Error;
+    console.error('Cloudinary Error:', err);
+    return NextResponse.json(
+      { error: err.message || 'Error al subir archivos a Cloudinary' },
+      { status: 500 }
+    );
+  }
 }
