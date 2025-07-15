@@ -3,6 +3,10 @@ import { useEffect, useState, useRef, useMemo } from 'react';
 import { db } from '@/lib/firebase';
 import { collection, getDocs } from 'firebase/firestore';
 import { ShoppingCart } from 'lucide-react';
+import Image from 'next/image';
+
+
+
 
 interface Producto {
   id: string;
@@ -29,7 +33,6 @@ export default function HomePage() {
   const [carrito, setCarrito] = useState<{ producto: Producto, cantidad: number }[]>([]);
   const [mostrarCarrito, setMostrarCarrito] = useState(false);
   const [imagenZoom, setImagenZoom] = useState<string | null>(null);
-  const cantidadInputRef = useRef<HTMLInputElement>(null);
   const [subcategoriaSeleccionada, setSubcategoriaSeleccionada] = useState('');
   const [filtroActivo, setFiltroActivo] = useState(0);
 
@@ -445,8 +448,8 @@ const productosFiltrados = useMemo(() => {
             </div>
           </div>
           <div className='text-right text-sm'>
-            <p>"Tu belleza, tu esencia, tu poder."</p>
-            <p>"Cada producto refleja quién eres."</p>
+            <p>&quot;Tu belleza, tu esencia, tu poder.&quot;</p>
+            <p>&quot;Cada producto refleja quién eres.&quot;</p>
             <p className='mt-2'>&copy; 2025 Coqueta by Nicolle. Todos los derechos reservados.</p>
           </div>
         </div>
@@ -507,7 +510,13 @@ const productosFiltrados = useMemo(() => {
           onClick={() => setImagenZoom(null)}
           className='fixed inset-0 bg-black/80 flex items-center justify-center z-[1000]'
         >
-          <img src={imagenZoom} alt='zoom' className='max-w-full max-h-full rounded shadow-lg' />
+          <Image
+  src='/images/logo.jpg'
+  alt='logo'
+  width={32}
+  height={32}
+  className='w-8 h-8 rounded-full'
+/>
         </div>
       )}
     </div>

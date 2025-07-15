@@ -19,7 +19,8 @@ export default function LoginPage() {
       } else {
         setError('No tienes acceso autorizado.');
       }
-    } catch (err: any) {
+    } catch {
+
       setError('Correo o contraseña incorrectos.');
     }
   };
