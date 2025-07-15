@@ -1,7 +1,6 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { Button } from '@/components/ui/button';
 import { Box, ClipboardList, FileText, Layers, BarChart3 } from 'lucide-react';
 
 export default function AdminDashboard() {
@@ -10,7 +9,7 @@ export default function AdminDashboard() {
   const goTo = (path: string) => router.push(path);
 
   return (
-    <div className="bg-white rounded-2xl shadow-xl p-10 font-[Times_New_Roman]">
+    <div className="bg-white rounded-2xl shadow-xl p-10 font-['Times New Roman',serif]">
       <h1 className="text-3xl font-bold text-black mb-6">
         Bienvenida Coqueta Administración
       </h1>

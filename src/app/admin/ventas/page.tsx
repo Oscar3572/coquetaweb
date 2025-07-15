@@ -1,4 +1,3 @@
-// Aquí tienes el módulo completo de registro de ventas integrado
 'use client';
 
 import { useEffect, useState, useMemo } from 'react';
@@ -135,21 +134,21 @@ export default function RegistroVentas() {
   };
 
   return (
-    <div className="p-6 max-w-5xl mx-auto bg-white min-h-screen">
-      <h1 className="text-2xl font-bold mb-4">Registro de Ventas</h1>
+    <div className="p-6 max-w-7xl mx-auto bg-white min-h-screen text-black">
+      <h1 className="text-3xl font-extrabold text-gray-800 mb-6">📦 Registro de Ventas</h1>
 
-      <div className="mb-4 grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
         <input
           type="text"
           value={busqueda}
           onChange={e => setBusqueda(e.target.value)}
-          placeholder="Buscar por nombre"
-          className="border px-4 py-2 rounded"
+          placeholder="🔍 Buscar producto..."
+          className="border px-4 py-2 rounded shadow text-black"
         />
         <select
           value={categoriaSeleccionada}
           onChange={e => setCategoriaSeleccionada(e.target.value)}
-          className="border px-4 py-2 rounded"
+          className="border px-4 py-2 rounded shadow text-black"
         >
           <option value=''>Todas las categorías</option>
           {categorias.map((cat, i) => (
@@ -159,7 +158,7 @@ export default function RegistroVentas() {
         <select
           value={subcategoriaSeleccionada}
           onChange={e => setSubcategoriaSeleccionada(e.target.value)}
-          className="border px-4 py-2 rounded"
+          className="border px-4 py-2 rounded shadow text-black"
         >
           <option value=''>Todas las subcategorías</option>
           {subcategorias.map((sub, i) => (
@@ -168,18 +167,18 @@ export default function RegistroVentas() {
         </select>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8">
         {productosFiltrados.map((prod) => (
-          <div key={prod.id} className="border p-3 rounded shadow">
+          <div key={prod.id} className="border rounded-xl p-3 shadow hover:shadow-lg transition">
             <img
               src={prod.imagenes?.[0] || ''}
               alt={prod.nombre}
-              className="w-full h-32 object-cover rounded mb-2"
+              className="w-full h-32 object-cover rounded-md mb-2"
             />
-            <h3 className="font-semibold text-sm">{prod.nombre}</h3>
-            <p className="text-sm text-gray-600">Q{prod.precio}</p>
+            <h3 className="font-bold text-sm">{prod.nombre}</h3>
+            <p className="text-sm text-gray-600 mb-2">Q{prod.precio}</p>
             <button
-              className="bg-pink-500 text-white mt-2 px-3 py-1 rounded text-sm"
+              className="bg-pink-600 hover:bg-pink-700 text-white px-3 py-1 rounded text-sm w-full"
               onClick={() => agregarProducto(prod)}
             >
               Agregar
@@ -188,75 +187,77 @@ export default function RegistroVentas() {
         ))}
       </div>
 
-      <h2 className="text-lg font-bold mb-2">Productos seleccionados</h2>
-      {venta.length === 0 ? (
-        <p className="text-sm">No hay productos agregados.</p>
-      ) : (
-        <table className="w-full mb-4 text-sm">
-          <thead>
-            <tr>
-              <th className="text-left">Nombre</th>
-              <th>Cantidad</th>
-              <th>Precio</th>
-              <th>Subtotal</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            {venta.map(item => (
-              <tr key={item.producto.id}>
-                <td>{item.producto.nombre}</td>
-                <td>
-                  <input
-                    type="number"
-                    min={1}
-                    max={item.producto.stock}
-                    value={item.cantidad}
-                    onChange={e => cambiarCantidad(item.producto.id, parseInt(e.target.value))}
-                    className="w-16 border rounded px-1 py-0.5"
-                  />
-                </td>
-                <td>Q{item.producto.precio}</td>
-                <td>Q{(item.producto.precio * item.cantidad).toFixed(2)}</td>
-                <td>
-                  <button
-                    onClick={() => eliminarProducto(item.producto.id)}
-                    className="text-red-600 hover:underline"
-                  >
-                    Quitar
-                  </button>
-                </td>
+      <div className="bg-gray-50 p-4 rounded shadow mb-6">
+        <h2 className="text-lg font-bold mb-2">🛒 Productos seleccionados</h2>
+        {venta.length === 0 ? (
+          <p className="text-sm text-gray-600">No hay productos agregados.</p>
+        ) : (
+          <table className="w-full text-sm text-left">
+            <thead className="bg-gray-200">
+              <tr>
+                <th className="p-2">Producto</th>
+                <th>Cantidad</th>
+                <th>Precio</th>
+                <th>Subtotal</th>
+                <th></th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
+            </thead>
+            <tbody>
+              {venta.map(item => (
+                <tr key={item.producto.id} className="border-t">
+                  <td className="p-2">{item.producto.nombre}</td>
+                  <td>
+                    <input
+                      type="number"
+                      min={1}
+                      max={item.producto.stock}
+                      value={item.cantidad}
+                      onChange={e => cambiarCantidad(item.producto.id, parseInt(e.target.value))}
+                      className="w-16 border rounded px-1 py-0.5 text-black"
+                    />
+                  </td>
+                  <td>Q{item.producto.precio}</td>
+                  <td>Q{(item.producto.precio * item.cantidad).toFixed(2)}</td>
+                  <td>
+                    <button
+                      onClick={() => eliminarProducto(item.producto.id)}
+                      className="text-red-600 hover:underline"
+                    >
+                      Quitar
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
 
-      <div className="mb-2 font-medium">Total: Q{total.toFixed(2)}</div>
+        <div className="mt-4 font-semibold text-gray-800">Total: Q{total.toFixed(2)}</div>
 
-      <div className="flex items-center gap-4 mb-4">
-        <label htmlFor="efectivo">Efectivo recibido:</label>
-        <input
-          type="number"
-          id="efectivo"
-          value={efectivo}
-          onChange={e => setEfectivo(parseFloat(e.target.value))}
-          className="border px-3 py-1 rounded"
-        />
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 mt-2">
+          <label htmlFor="efectivo" className="text-sm font-medium">Efectivo recibido:</label>
+          <input
+            type="number"
+            id="efectivo"
+            value={efectivo}
+            onChange={e => setEfectivo(parseFloat(e.target.value))}
+            className="border px-3 py-1 rounded text-black"
+          />
+        </div>
+
+        <div className="mt-2 font-semibold text-gray-800">
+          Cambio: Q{cambio < 0 ? '0.00' : cambio.toFixed(2)}
+        </div>
+
+        <button
+          onClick={registrarVenta}
+          className="bg-green-600 text-white mt-4 px-6 py-2 rounded hover:bg-green-700"
+        >
+          Registrar venta
+        </button>
+
+        {mensaje && <p className="mt-4 text-pink-600 font-medium">{mensaje}</p>}
       </div>
-
-      <div className="mb-4 font-medium">
-        Cambio: Q{cambio < 0 ? '0.00' : cambio.toFixed(2)}
-      </div>
-
-      <button
-        onClick={registrarVenta}
-        className="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700"
-      >
-        Registrar venta
-      </button>
-
-      {mensaje && <p className="mt-4 text-pink-600 font-medium">{mensaje}</p>}
     </div>
   );
 }
