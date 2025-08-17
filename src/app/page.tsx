@@ -1,12 +1,9 @@
 'use client';
-import { useEffect, useState, useRef, useMemo } from 'react';
+import { useEffect, useState,  useMemo } from 'react';
 import { db } from '@/lib/firebase';
 import { collection, getDocs } from 'firebase/firestore';
 import { ShoppingCart } from 'lucide-react';
 import Image from 'next/image';
-
-
-
 
 interface Producto {
   id: string;
@@ -192,9 +189,10 @@ const productosFiltrados = useMemo(() => {
       {/* CATÁLOGO */}
       <section id='catalogo' className='bg-[#F6EDED] px-6 pb-24 pt-8'>
         <h2 className='text-3xl font-bold text-[#4B2E2E] mb-6 text-center'>Catálogo de productos</h2>
-        <div className='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6'>
+       <div className='max-w-6xl mx-auto grid grid-cols-3 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5'>
           {productosFiltrados.map((prod) => (
-            <div key={prod.id} className='relative col-span-2 sm:col-span-1'>
+            <div key={prod.id} className='relative'>
+
               {/* Tarjeta del producto */}
               <div
                 onClick={() =>
@@ -202,11 +200,14 @@ const productosFiltrados = useMemo(() => {
                 }
                 className='bg-white p-3 rounded-lg shadow hover:scale-105 transition-transform cursor-pointer'
               >
-                <img
-                  src={prod.imagenes?.[0] || '/images/logo.jpg'}
-                  alt={prod.nombre || 'producto'}
-                  className='h-32 w-full object-cover rounded mb-2'
-                />
+                <div className="w-full aspect-[3/4] overflow-hidden rounded mb-2">
+                  <img
+                    src={prod.imagenes?.[0] || '/images/logo.jpg'}
+                    alt={prod.nombre || 'producto'}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+
                 <h4 className='text-[#4B2E2E] font-semibold text-center text-sm'>{prod.nombre || ''}</h4>
                 <p className='text-[#8C4A2F] text-center text-sm'>Q{prod.precio ?? 0}</p>
               </div>
@@ -505,20 +506,15 @@ const productosFiltrados = useMemo(() => {
       )}
 
       {/* ZOOM DE IMAGEN */}
-      {imagenZoom && (
-        <div
-          onClick={() => setImagenZoom(null)}
-          className='fixed inset-0 bg-black/80 flex items-center justify-center z-[1000]'
-        >
-          <Image
-  src='/images/logo.jpg'
-  alt='logo'
-  width={32}
-  height={32}
-  className='w-8 h-8 rounded-full'
-/>
-        </div>
-      )}
+{imagenZoom && (
+  <div
+    onClick={() => setImagenZoom(null)}
+    className='fixed inset-0 bg-black/80 flex items-center justify-center z-[1000] p-4'
+  >
+    <img src={imagenZoom} alt='zoom' className='max-w-full max-h-full object-contain rounded' />
+  </div>
+)}
+
     </div>
   );
 }
