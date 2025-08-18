@@ -22,22 +22,48 @@ export default function ProductDetailModal({
   const [qty, setQty] = useState(1);
   const panelRef = useRef<HTMLDivElement>(null);
 
+  // Texto de descripción (acepta varios campos)
   const desc =
     producto.descripcion ??
     (producto as any).detalle ??
     (producto as any).subtitulo ??
     '';
 
-  // Bloquea scroll del body
+  // Bloquear scroll del body (técnica robusta para móviles)
+  const bodyScrollY = useRef(0);
   useEffect(() => {
-    const prev = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
+    bodyScrollY.current = window.scrollY || document.documentElement.scrollTop || 0;
+
+    const { style } = document.body;
+    const prev = {
+      position: style.position,
+      top: style.top,
+      left: style.left,
+      right: style.right,
+      width: style.width,
+      overflow: style.overflow,
+    };
+
+    style.position = 'fixed';
+    style.top = `-${bodyScrollY.current}px`;
+    style.left = '0';
+    style.right = '0';
+    style.width = '100%';
+    // overflow hidden por si algún navegador lo necesita
+    style.overflow = 'hidden';
+
     return () => {
-      document.body.style.overflow = prev;
+      style.position = prev.position;
+      style.top = prev.top;
+      style.left = prev.left;
+      style.right = prev.right;
+      style.width = prev.width;
+      style.overflow = prev.overflow;
+      window.scrollTo(0, bodyScrollY.current);
     };
   }, []);
 
-  // Cerrar con ESC
+  // Cerrar con Esc
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
@@ -60,7 +86,7 @@ export default function ProductDetailModal({
     };
   }, [onClose]);
 
-  // Cerrar clickeando fuera
+  // Cerrar clickeando fuera del panel
   const onBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!panelRef.current) return;
     if (!panelRef.current.contains(e.target as Node)) onClose();
@@ -90,7 +116,7 @@ export default function ProductDetailModal({
           ✕
         </button>
 
-        {/* Contenido */}
+        {/* Contenido (scroll dentro del panel) */}
         <div className="md:flex gap-6 p-4 md:p-6 overflow-y-auto overscroll-contain">
           {/* MEDIA / CARRUSEL */}
           <div className="md:w-1/2 w-full">
@@ -122,13 +148,13 @@ export default function ProductDetailModal({
             </div>
 
             {imgs.length > 1 && (
-              <div className="hidden md:flex mt-3 gap-2 overflow-x-auto pb-1">
+              <div className="mt-3 flex gap-2 overflow-x-auto pb-1 snap-x snap-mandatory">
                 {imgs.map((src, i) => (
                   <button
                     key={i}
                     onClick={() => setIdx(i)}
-                    className={`shrink-0 w-16 aspect-square rounded-md overflow-hidden border ${
-                      i === idx ? 'border-rose-400' : 'border-neutral-200'
+                    className={`shrink-0 w-14 md:w-16 aspect-square rounded-md overflow-hidden border ${
+                      i === idx ? 'border-rose-400 ring-2 ring-rose-200' : 'border-neutral-200'
                     }`}
                     aria-label={`Imagen ${i + 1}`}
                   >
