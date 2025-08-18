@@ -22,14 +22,13 @@ export default function ProductDetailModal({
   const [qty, setQty] = useState(1);
   const panelRef = useRef<HTMLDivElement>(null);
 
-  // Texto de descripción (acepta varios campos)
   const desc =
     producto.descripcion ??
     (producto as any).detalle ??
     (producto as any).subtitulo ??
     '';
 
-  // Evitar scroll del body mientras el modal está abierto
+  // Bloquea scroll del body
   useEffect(() => {
     const prev = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
@@ -38,7 +37,7 @@ export default function ProductDetailModal({
     };
   }, []);
 
-  // Cerrar con Esc
+  // Cerrar con ESC
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
@@ -47,7 +46,7 @@ export default function ProductDetailModal({
     return () => window.removeEventListener('keydown', onKey);
   }, [onClose]);
 
-  // (Opcional agradable) Botón "Atrás" del dispositivo cierra el modal
+  // Back del dispositivo cierra modal
   useEffect(() => {
     const onPop = () => onClose();
     const statePushed = { __modal__: true };
@@ -61,7 +60,7 @@ export default function ProductDetailModal({
     };
   }, [onClose]);
 
-  // Cerrar haciendo click fuera del panel
+  // Cerrar clickeando fuera
   const onBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!panelRef.current) return;
     if (!panelRef.current.contains(e.target as Node)) onClose();
@@ -82,7 +81,7 @@ export default function ProductDetailModal({
         className="relative mx-auto bg-white text-[#4B2E2E] rounded-xl shadow-lg w-full max-w-md md:max-w-4xl overflow-hidden max-h-[92vh]"
         onMouseDown={(e) => e.stopPropagation()}
       >
-        {/* Cerrar */}
+        {/* Botón X */}
         <button
           onClick={onClose}
           className="absolute right-3 top-3 z-10 inline-flex items-center justify-center w-9 h-9 rounded-full bg-neutral-100 hover:bg-neutral-200"
@@ -91,7 +90,7 @@ export default function ProductDetailModal({
           ✕
         </button>
 
-        {/* Contenido con scroll si se necesita */}
+        {/* Contenido */}
         <div className="md:flex gap-6 p-4 md:p-6 overflow-y-auto overscroll-contain">
           {/* MEDIA / CARRUSEL */}
           <div className="md:w-1/2 w-full">
@@ -123,7 +122,7 @@ export default function ProductDetailModal({
             </div>
 
             {imgs.length > 1 && (
-              <div className="mt-3 flex gap-2 overflow-x-auto pb-1">
+              <div className="hidden md:flex mt-3 gap-2 overflow-x-auto pb-1">
                 {imgs.map((src, i) => (
                   <button
                     key={i}
@@ -202,7 +201,7 @@ export default function ProductDetailModal({
               </a>
             </div>
 
-            {/* Cerrar (visible en móvil arriba de la barra) */}
+            {/* Cerrar (arriba de la barra en móvil) */}
             <button
               onClick={onClose}
               className="mt-4 text-rose-600 underline md:hidden"
@@ -210,13 +209,13 @@ export default function ProductDetailModal({
               Cerrar
             </button>
 
-            {/* BOTONES fijos en móvil */}
-            <div className="md:hidden sticky bottom-0 left-0 right-0 bg-white border-t mt-2 pt-2 pb-[calc(env(safe-area-inset-bottom)+10px)]">
-              <div className="flex gap-3">
+            {/* BOTONES fijos en móvil (compactos) */}
+            <div className="md:hidden sticky bottom-0 left-0 right-0 bg-white/95 backdrop-blur border-t mt-1 pt-2 pb-[max(env(safe-area-inset-bottom),8px)]">
+              <div className="flex gap-2">
                 <button
                   type="button"
                   onClick={() => onAddToCart(producto, qty)}
-                  className="flex-1 h-11 rounded-full bg-rose-400 hover:bg-rose-500 text-white font-medium"
+                  className="flex-1 h-10 rounded-full bg-rose-400 hover:bg-rose-500 text-white font-medium text-[15px]"
                 >
                   Añadir al carrito
                 </button>
@@ -227,7 +226,7 @@ export default function ProductDetailModal({
                   href={`https://wa.me/50234850804?text=${encodeURIComponent(
                     `Hola, me interesa: ${producto.nombre} (Q${producto.precio}) x${qty}`
                   )}`}
-                  className="flex-1 h-11 rounded-full bg-green-500 hover:bg-green-600 text-white font-medium text-center leading-[44px]"
+                  className="flex-1 h-10 rounded-full bg-green-500 hover:bg-green-600 text-white font-medium text-center leading-[40px] text-[15px]"
                 >
                   WhatsApp
                 </a>
