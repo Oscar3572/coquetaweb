@@ -65,7 +65,7 @@ export default function ProductDetailModal({
     >
       <div
         ref={panelRef}
-        className="relative mx-auto bg-white text-[#4B2E2E] rounded-xl shadow-lg w-full max-w-md md:max-w-4xl overflow-hidden max-h-[90vh]"
+        className="relative mx-auto bg-white text-[#4B2E2E] rounded-xl shadow-lg w-full max-w-md md:max-w-4xl overflow-hidden max-h-[92vh]"
         onMouseDown={(e) => e.stopPropagation()}
       >
         {/* Cerrar */}
@@ -81,7 +81,7 @@ export default function ProductDetailModal({
         <div className="md:flex gap-6 p-4 md:p-6 overflow-y-auto">
           {/* MEDIA / CARRUSEL */}
           <div className="md:w-1/2 w-full">
-            <div className="relative aspect-[3/4] rounded-lg overflow-hidden bg-neutral-100">
+            <div className="relative aspect-[4/5] md:aspect-[3/4] rounded-lg overflow-hidden bg-neutral-100">
               <img
                 src={imgs[idx]}
                 alt={producto.nombre}
@@ -127,7 +127,7 @@ export default function ProductDetailModal({
           </div>
 
           {/* INFO */}
-          <div className="md:w-1/2 w-full mt-4 md:mt-0 text-[#4B2E2E]">
+          <div className="md:w-1/2 w-full mt-4 md:mt-0 text-[#4B2E2E] pb-24 md:pb-0">
             <h3 className="text-2xl md:text-3xl font-semibold leading-snug break-words whitespace-normal">
               {producto.nombre}
             </h3>
@@ -166,8 +166,8 @@ export default function ProductDetailModal({
               />
             </div>
 
-            {/* BOTONES */}
-            <div className="flex flex-col sm:flex-row gap-3 mt-4">
+            {/* BOTONES (desktop/tablet) */}
+            <div className="hidden md:flex gap-3 mt-4">
               <button
                 type="button"
                 onClick={() => onAddToCart(producto, qty)}
@@ -186,6 +186,30 @@ export default function ProductDetailModal({
               >
                 WhatsApp
               </a>
+            </div>
+
+            {/* BOTONES fijos en móvil */}
+            <div className="md:hidden sticky bottom-0 left-0 right-0 bg-white border-t mt-4 pt-3 pb-[calc(env(safe-area-inset-bottom)+12px)]">
+              <div className="flex gap-3">
+                <button
+                  type="button"
+                  onClick={() => onAddToCart(producto, qty)}
+                  className="flex-1 h-11 rounded-full bg-rose-400 hover:bg-rose-500 text-white font-medium"
+                >
+                  Añadir al carrito
+                </button>
+
+                <a
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  href={`https://wa.me/50234850804?text=${encodeURIComponent(
+                    `Hola, me interesa: ${producto.nombre} (Q${producto.precio}) x${qty}`
+                  )}`}
+                  className="flex-1 h-11 rounded-full bg-green-500 hover:bg-green-600 text-white font-medium text-center leading-[44px]"
+                >
+                  WhatsApp
+                </a>
+              </div>
             </div>
 
             <button
