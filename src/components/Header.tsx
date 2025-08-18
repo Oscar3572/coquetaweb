@@ -1,12 +1,21 @@
+// src/components/Header.tsx
 'use client';
 import { ShoppingCart } from 'lucide-react';
+
+const getInitials = (name?: string) =>
+  (name || 'LG')
+    .trim()
+    .split(/\s+/)
+    .map((w) => w[0]?.toUpperCase())
+    .slice(0, 2)
+    .join('') || 'LG';
 
 export default function Header({
   categorias,
   onPickCategoria,
   onSearch,
   onOpenCart,
-  cartCount
+  cartCount,
 }: {
   categorias: string[];
   onPickCategoria: (c: string) => void;
@@ -32,8 +41,11 @@ export default function Header({
             <summary className="cursor-pointer list-none hover:underline">Categorías ▾</summary>
             <div className="absolute bg-white mt-2 shadow rounded-md w-44 z-50">
               {categorias.map((c) => (
-                <button key={c} onClick={() => onPickCategoria(c)}
-                  className="block px-4 py-2 text-left w-full hover:bg-pink-100 text-[#4B2E2E]">
+                <button
+                  key={c}
+                  onClick={() => onPickCategoria(c)}
+                  className="block px-4 py-2 text-left w-full hover:bg-pink-100 text-[#4B2E2E]"
+                >
                   {c}
                 </button>
               ))}
@@ -41,8 +53,12 @@ export default function Header({
           </details>
         </div>
 
-        <a href="#ofertas" className="hover:underline">Ofertas</a>
-        <a href="#contacto" className="hover:underline">Contacto</a>
+        <a href="#ofertas" className="hover:underline">
+          Ofertas
+        </a>
+        <a href="#contacto" className="hover:underline">
+          Contacto
+        </a>
 
         <input
           type="text"
@@ -51,7 +67,8 @@ export default function Header({
           className="rounded-full px-4 py-1 text-sm bg-white shadow-inner outline-none"
         />
 
-        <div className="relative cursor-pointer" onClick={onOpenCart}>
+        {/* Carrito */}
+        <div className="relative cursor-pointer" onClick={onOpenCart} aria-label="Abrir carrito">
           <ShoppingCart />
           {cartCount > 0 && (
             <span className="absolute -top-2 -right-2 bg-red-600 text-white text-xs rounded-full px-1">
@@ -59,6 +76,16 @@ export default function Header({
             </span>
           )}
         </div>
+
+        {/* Avatar/Login (LG) */}
+        <a
+          href="/login"
+          className="ml-1 inline-flex items-center justify-center w-9 h-9 rounded-full bg-white text-[#4B2E2E] font-semibold shadow hover:bg-pink-50"
+          title="Iniciar sesión"
+          aria-label="Iniciar sesión"
+        >
+          {getInitials('LG')}
+        </a>
       </nav>
     </header>
   );

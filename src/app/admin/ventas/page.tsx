@@ -134,8 +134,8 @@ export default function RegistroVentas() {
   };
 
   return (
-    <div className="p-6 max-w-7xl mx-auto bg-white min-h-screen text-black">
-      <h1 className="text-3xl font-extrabold text-gray-800 mb-6">📦 Registro de Ventas</h1>
+    <div className="p-4 md:p-6 max-w-7xl mx-auto bg-white min-h-screen text-black">
+      <h1 className="text-2xl md:text-3xl font-extrabold text-gray-800 mb-6">📦 Registro de Ventas</h1>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
         <input
@@ -167,7 +167,8 @@ export default function RegistroVentas() {
         </select>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8">
+      {/* Catálogo compacto y responsive */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 md:gap-6 mb-8">
         {productosFiltrados.map((prod) => (
           <div key={prod.id} className="border rounded-xl p-3 shadow hover:shadow-lg transition">
             <img
@@ -175,7 +176,7 @@ export default function RegistroVentas() {
               alt={prod.nombre}
               className="w-full h-32 object-cover rounded-md mb-2"
             />
-            <h3 className="font-bold text-sm">{prod.nombre}</h3>
+            <h3 className="font-bold text-sm line-clamp-2">{prod.nombre}</h3>
             <p className="text-sm text-gray-600 mb-2">Q{prod.precio}</p>
             <button
               className="bg-pink-600 hover:bg-pink-700 text-white px-3 py-1 rounded text-sm w-full"
@@ -187,12 +188,12 @@ export default function RegistroVentas() {
         ))}
       </div>
 
-      <div className="bg-gray-50 p-4 rounded shadow mb-6">
+      <div className="bg-gray-50 p-4 rounded shadow mb-6 overflow-x-auto">
         <h2 className="text-lg font-bold mb-2">🛒 Productos seleccionados</h2>
         {venta.length === 0 ? (
           <p className="text-sm text-gray-600">No hay productos agregados.</p>
         ) : (
-          <table className="w-full text-sm text-left">
+          <table className="min-w-[700px] w-full text-sm text-left">
             <thead className="bg-gray-200">
               <tr>
                 <th className="p-2">Producto</th>

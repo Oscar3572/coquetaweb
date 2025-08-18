@@ -139,8 +139,8 @@ export default function InventarioPage() {
   );
 
   return (
-    <div className="min-h-screen bg-[#fef9f6] text-[#4B2E2E] font-sans px-6 py-4">
-      <h1 className="text-3xl font-bold mb-4">Inventario de Productos</h1>
+    <div className="min-h-screen bg-[#fef9f6] text-[#4B2E2E] font-sans px-4 md:px-6 py-4">
+      <h1 className="text-2xl md:text-3xl font-bold mb-4">Inventario de Productos</h1>
 
       <div className="flex flex-wrap gap-4 mb-6">
         <input
@@ -172,52 +172,57 @@ export default function InventarioPage() {
       </div>
 
       <div className="flex flex-col md:flex-row gap-6">
-        <table className="w-full text-sm text-left">
-          <thead className="sticky top-0 bg-pink-50">
-            <tr>
-              <th className="p-3">Imagen</th>
-              <th className="p-3">Nombre</th>
-              <th className="p-3">Marca</th>
-              <th className="p-3">Descripción</th>
-              <th className="p-3">Stock</th>
-              <th className="p-3">Precio Venta</th>
-              <th className="p-3">Ganancia</th>
-              <th className="p-3 text-center">Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            {productosFiltrados.map((p) => (
-              <tr key={p.id} className={`border-t hover:bg-pink-50 ${productoEditando?.id === p.id ? 'bg-pink-100' : ''}`}>
-                <td className="p-3">{p.imagenes?.[0] && <Image src={p.imagenes[0]} alt={p.nombre} width={45} height={45} />}</td>
-                <td className="p-3">{p.nombre}</td>
-                <td className="p-3">{p.marca}</td>
-                <td className="p-3">{p.descripcion}</td>
-                <td className="p-3">{p.stock}</td>
-                <td className="p-3">{typeof p.precioVenta === 'number' ? `Q${p.precioVenta.toFixed(2)}` : '-'}</td>
-                <td className="p-3">
-                  {typeof p.precioVenta === 'number' && typeof p.precioCompra === 'number'
-                    ? `Q${(p.precioVenta - p.precioCompra).toFixed(2)}`
-                    : '-'}
-                </td>
-                <td className="p-3 flex gap-2">
-                  <button onClick={() => setProductoEditando(p)} className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-sm">Editar</button>
-                  <button
-                    onClick={async () => {
-                      if (confirm('¿Estás seguro de eliminar este producto?')) {
-                        await deleteDoc(doc(db, 'productos', p.id));
-                        setProductos(prev => prev.filter(prod => prod.id !== p.id));
-                        if (productoEditando?.id === p.id) setProductoEditando(null);
-                      }
-                    }}
-                    className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-sm"
-                  >
-                    Eliminar
-                  </button>
-                </td>
+        {/* Tabla scrollable en móvil */}
+        <div className="w-full overflow-x-auto bg-white rounded-lg shadow">
+          <table className="min-w-[900px] w-full text-sm text-left">
+            <thead className="sticky top-0 bg-pink-50">
+              <tr>
+                <th className="p-3">Imagen</th>
+                <th className="p-3">Nombre</th>
+                <th className="p-3">Marca</th>
+                <th className="p-3">Descripción</th>
+                <th className="p-3">Stock</th>
+                <th className="p-3">Precio Venta</th>
+                <th className="p-3">Ganancia</th>
+                <th className="p-3 text-center">Acciones</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {productosFiltrados.map((p) => (
+                <tr key={p.id} className={`border-t hover:bg-pink-50 ${productoEditando?.id === p.id ? 'bg-pink-100' : ''}`}>
+                  <td className="p-3">
+                    {p.imagenes?.[0] && <Image src={p.imagenes[0]} alt={p.nombre} width={45} height={45} />}
+                  </td>
+                  <td className="p-3">{p.nombre}</td>
+                  <td className="p-3">{p.marca}</td>
+                  <td className="p-3">{p.descripcion}</td>
+                  <td className="p-3">{p.stock}</td>
+                  <td className="p-3">{typeof p.precioVenta === 'number' ? `Q${p.precioVenta.toFixed(2)}` : '-'}</td>
+                  <td className="p-3">
+                    {typeof p.precioVenta === 'number' && typeof p.precioCompra === 'number'
+                      ? `Q${(p.precioVenta - p.precioCompra).toFixed(2)}`
+                      : '-'}
+                  </td>
+                  <td className="p-3 flex gap-2">
+                    <button onClick={() => setProductoEditando(p)} className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-sm">Editar</button>
+                    <button
+                      onClick={async () => {
+                        if (confirm('¿Estás seguro de eliminar este producto?')) {
+                          await deleteDoc(doc(db, 'productos', p.id));
+                          setProductos(prev => prev.filter(prod => prod.id !== p.id));
+                          if (productoEditando?.id === p.id) setProductoEditando(null);
+                        }
+                      }}
+                      className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-sm"
+                    >
+                      Eliminar
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
 
         {productoEditando && (
           <div className="w-full md:w-2/5 bg-white p-6 rounded-xl shadow-md">
