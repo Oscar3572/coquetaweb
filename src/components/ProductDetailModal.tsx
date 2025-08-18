@@ -47,6 +47,20 @@ export default function ProductDetailModal({
     return () => window.removeEventListener('keydown', onKey);
   }, [onClose]);
 
+  // (Opcional agradable) Botón "Atrás" del dispositivo cierra el modal
+  useEffect(() => {
+    const onPop = () => onClose();
+    const statePushed = { __modal__: true };
+    try { history.pushState(statePushed, ''); } catch {}
+    window.addEventListener('popstate', onPop);
+    return () => {
+      window.removeEventListener('popstate', onPop);
+      if ((history.state as any)?.__modal__) {
+        try { history.back(); } catch {}
+      }
+    };
+  }, [onClose]);
+
   // Cerrar haciendo click fuera del panel
   const onBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!panelRef.current) return;
@@ -58,7 +72,7 @@ export default function ProductDetailModal({
 
   return (
     <div
-      className="fixed inset-0 z-50 bg-black/50 p-4 md:p-6"
+      className="fixed inset-0 z-50 bg-black/50 p-4 md:p-6 overscroll-contain"
       onMouseDown={onBackdropClick}
       aria-modal="true"
       role="dialog"
@@ -71,17 +85,17 @@ export default function ProductDetailModal({
         {/* Cerrar */}
         <button
           onClick={onClose}
-          className="absolute right-3 top-3 inline-flex items-center justify-center w-9 h-9 rounded-full bg-neutral-100 hover:bg-neutral-200"
+          className="absolute right-3 top-3 z-10 inline-flex items-center justify-center w-9 h-9 rounded-full bg-neutral-100 hover:bg-neutral-200"
           aria-label="Cerrar"
         >
           ✕
         </button>
 
         {/* Contenido con scroll si se necesita */}
-        <div className="md:flex gap-6 p-4 md:p-6 overflow-y-auto">
+        <div className="md:flex gap-6 p-4 md:p-6 overflow-y-auto overscroll-contain">
           {/* MEDIA / CARRUSEL */}
           <div className="md:w-1/2 w-full">
-            <div className="relative aspect-[4/5] md:aspect-[3/4] rounded-lg overflow-hidden bg-neutral-100">
+            <div className="relative aspect-[5/6] md:aspect-[3/4] rounded-lg overflow-hidden bg-neutral-100">
               <img
                 src={imgs[idx]}
                 alt={producto.nombre}
@@ -188,8 +202,16 @@ export default function ProductDetailModal({
               </a>
             </div>
 
+            {/* Cerrar (visible en móvil arriba de la barra) */}
+            <button
+              onClick={onClose}
+              className="mt-4 text-rose-600 underline md:hidden"
+            >
+              Cerrar
+            </button>
+
             {/* BOTONES fijos en móvil */}
-            <div className="md:hidden sticky bottom-0 left-0 right-0 bg-white border-t mt-4 pt-3 pb-[calc(env(safe-area-inset-bottom)+12px)]">
+            <div className="md:hidden sticky bottom-0 left-0 right-0 bg-white border-t mt-2 pt-2 pb-[calc(env(safe-area-inset-bottom)+10px)]">
               <div className="flex gap-3">
                 <button
                   type="button"
@@ -211,13 +233,6 @@ export default function ProductDetailModal({
                 </a>
               </div>
             </div>
-
-            <button
-              onClick={onClose}
-              className="mt-4 text-rose-600 underline"
-            >
-              Cerrar
-            </button>
           </div>
         </div>
       </div>
