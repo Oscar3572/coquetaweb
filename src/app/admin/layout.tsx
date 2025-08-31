@@ -26,10 +26,10 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
   }, []);
 
   return (
-    <div className="min-h-screen font-[Times_New_Roman] bg-[#ffe6ec] flex">
+    <div className="min-h-dvh font-[Times_New_Roman] bg-[#ffe6ec] flex">
 
-      {/* Topbar solo móvil */}
-      <div className="md:hidden sticky top-0 z-40 w-full bg-[#ffddd9] p-3 flex items-center justify-between shadow">
+      {/* Topbar solo móvil (fixed para que no tape el contenido al hacer scroll) */}
+      <div className="md:hidden fixed top-0 left-0 right-0 z-40 w-full bg-[#ffddd9] p-3 flex items-center justify-between shadow">
         <button
           onClick={() => setOpen(true)}
           className="inline-flex items-center gap-2 text-[#4B2E2E]"
@@ -40,7 +40,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
         </button>
         <h1 className="text-[#4B2E2E] font-bold">COQUETA</h1>
         <button
-          onClick={() => (window.location.href = '/login')}
+          onClick={() => (typeof window !== 'undefined' && (window.location.href = '/login'))}
           className="text-[#4B2E2E] text-sm"
         >
           Salir
@@ -98,7 +98,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
         </div>
 
         <button
-          onClick={() => (window.location.href = '/login')}
+          onClick={() => (typeof window !== 'undefined' && (window.location.href = '/login'))}
           className="flex items-center gap-2 text-black hover:text-[#d32f2f] transition"
         >
           <LogOut size={20} /> Cerrar sesión
@@ -106,8 +106,12 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
       </aside>
 
       {/* Contenido */}
-      <main className="flex-1 w-full p-4 md:p-10 overflow-y-auto">
-        {children}
+      {/* pt-14 para que no lo tape el header fijo en móvil.
+          overflow-y-auto solo en md+ para evitar doble scroll en móvil. */}
+      <main className="flex-1 w-full p-4 pt-14 md:pt-10 md:p-10 md:overflow-y-auto">
+        <div className="max-w-screen-lg mx-auto">
+          {children}
+        </div>
       </main>
     </div>
   );
