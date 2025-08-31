@@ -27,6 +27,63 @@ interface CategoriaData {
   subcategorias: string[];
 }
 
+/* ===== Helper: detectar móvil ===== */
+function useIsMobile(breakpoint = 768) {
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < breakpoint);
+    check();
+    window.addEventListener('resize', check);
+    return () => window.removeEventListener('resize', check);
+  }, [breakpoint]);
+  return isMobile;
+}
+
+/* ===== Modal para móvil ===== */
+function MobileModal({
+  title,
+  children,
+  onClose,
+}: {
+  title: string;
+  children: React.ReactNode;
+  onClose: () => void;
+}) {
+  // bloquear scroll del body mientras está abierto
+  useEffect(() => {
+    const { body } = document;
+    const prev = body.style.overflow;
+    body.style.overflow = 'hidden';
+    return () => {
+      body.style.overflow = prev;
+    };
+  }, []);
+
+  return (
+    <div className="fixed inset-0 z-[60]">
+      <div className="absolute inset-0 bg-black/50" onClick={onClose} />
+      <div
+        role="dialog"
+        aria-modal="true"
+        className="absolute inset-x-0 bottom-0 max-h-[85vh] rounded-t-2xl bg-white shadow-2xl
+                   p-4 pb-6 overflow-y-auto"
+      >
+        <div className="flex items-center justify-between mb-2">
+          <h2 className="text-lg font-semibold">{title}</h2>
+          <button
+            onClick={onClose}
+            className="px-3 py-1 rounded-md border hover:bg-gray-50 active:scale-95"
+            aria-label="Cerrar"
+          >
+            ✕
+          </button>
+        </div>
+        {children}
+      </div>
+    </div>
+  );
+}
+
 export default function InventarioPage() {
   const [productos, setProductos] = useState<Producto[]>([]);
   const [productoEditando, setProductoEditando] = useState<Producto | null>(null);
@@ -37,6 +94,8 @@ export default function InventarioPage() {
   const [filtroSubcategoria, setFiltroSubcategoria] = useState('');
   const [nuevasImagenes, setNuevasImagenes] = useState<File[]>([]);
   const [nuevoVideo, setNuevoVideo] = useState<File | null>(null);
+
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     const fetchProductos = async () => {
@@ -123,19 +182,74 @@ export default function InventarioPage() {
 
     await updateDoc(ref, actualizado);
 
-    setProductos(prev =>
-      prev.map(p => (p.id === productoEditando.id ? actualizado : p))
-    );
+    setProductos(prev => prev.map(p => (p.id === productoEditando.id ? actualizado : p)));
     setProductoEditando(actualizado);
     setNuevasImagenes([]);
     setNuevoVideo(null);
     alert('✅ Producto actualizado');
+
+    // en móvil, cerramos el modal al guardar
+    if (isMobile) setProductoEditando(null);
   };
 
   const productosFiltrados = productos.filter((p) =>
     p.nombre.toLowerCase().includes(filtro.toLowerCase()) &&
     (filtroCategoria ? p.categoria === filtroCategoria : true) &&
     (filtroSubcategoria ? p.subcategoria === filtroSubcategoria : true)
+  );
+
+  const EditorForm = (
+    <div className="grid grid-cols-1 gap-3">
+      <input name="nombre" value={productoEditando?.nombre ?? ''} onChange={handleInputChange} placeholder="Nombre" className="p-2 border rounded" />
+      <input name="descripcion" value={productoEditando?.descripcion ?? ''} onChange={handleInputChange} placeholder="Descripción" className="p-2 border rounded" />
+      <input name="marca" value={productoEditando?.marca ?? ''} onChange={handleInputChange} placeholder="Marca" className="p-2 border rounded" />
+      <input name="tono" value={productoEditando?.tono ?? ''} onChange={handleInputChange} placeholder="Tono / Número" className="p-2 border rounded" />
+      <input name="stock" type="number" value={productoEditando?.stock ?? ''} onChange={handleInputChange} placeholder="Stock" className="p-2 border rounded" />
+      <input name="precioCompra" type="number" value={productoEditando?.precioCompra ?? ''} onChange={handleInputChange} placeholder="Precio Compra" className="p-2 border rounded" />
+      <input name="precioVenta" type="number" value={productoEditando?.precioVenta ?? ''} onChange={handleInputChange} placeholder="Precio Venta" className="p-2 border rounded" />
+      <select name="categoria" value={productoEditando?.categoria ?? ''} onChange={handleInputChange} className="p-2 border rounded">
+        <option value="">Selecciona una categoría</option>
+        {categorias.map((c) => (
+          <option key={c.id} value={c.id}>{c.nombre}</option>
+        ))}
+      </select>
+      <select name="subcategoria" value={productoEditando?.subcategoria ?? ''} onChange={handleInputChange} className="p-2 border rounded">
+        <option value="">Selecciona una subcategoría</option>
+        {subcategoriasDisponibles.map((s, i) => (
+          <option key={i} value={s}>{s}</option>
+        ))}
+      </select>
+      <input
+        type="file"
+        accept="image/*"
+        multiple
+        onChange={(e) => {
+          const files = Array.from(e.target.files ?? []).slice(0, 3);
+          setNuevasImagenes(files);
+        }}
+        className="p-2 border rounded"
+      />
+      <input
+        type="file"
+        accept="video/*"
+        onChange={(e) => setNuevoVideo(e.target.files?.[0] ?? null)}
+        className="p-2 border rounded"
+      />
+      <div className="flex gap-2 justify-end">
+        <button
+          onClick={() => setProductoEditando(null)}
+          className="px-4 py-2 rounded border hover:bg-gray-50"
+        >
+          Cancelar
+        </button>
+        <button
+          onClick={handleGuardar}
+          className="bg-[#D89BA4] hover:bg-[#c68793] text-white py-2 px-4 rounded"
+        >
+          Guardar Cambios
+        </button>
+      </div>
+    </div>
   );
 
   return (
@@ -204,7 +318,12 @@ export default function InventarioPage() {
                       : '-'}
                   </td>
                   <td className="p-3 flex gap-2">
-                    <button onClick={() => setProductoEditando(p)} className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-sm">Editar</button>
+                    <button
+                      onClick={() => setProductoEditando(p)}
+                      className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded text-sm"
+                    >
+                      Editar
+                    </button>
                     <button
                       onClick={async () => {
                         if (confirm('¿Estás seguro de eliminar este producto?')) {
@@ -224,41 +343,25 @@ export default function InventarioPage() {
           </table>
         </div>
 
-        {productoEditando && (
-          <div className="w-full md:w-2/5 bg-white p-6 rounded-xl shadow-md">
+        {/* Panel de edición:
+            - Desktop: panel lateral a la par.
+            - Móvil: modal flotante arriba. */}
+        {!isMobile && productoEditando && (
+          <div className="w-full md:w-2/5 bg-white p-6 rounded-xl shadow-md self-start">
             <h2 className="text-xl font-semibold mb-4">Editar Producto</h2>
-            <div className="grid grid-cols-1 gap-3">
-              <input name="nombre" value={productoEditando.nombre} onChange={handleInputChange} placeholder="Nombre" className="p-2 border rounded" />
-              <input name="descripcion" value={productoEditando.descripcion} onChange={handleInputChange} placeholder="Descripción" className="p-2 border rounded" />
-              <input name="marca" value={productoEditando.marca} onChange={handleInputChange} placeholder="Marca" className="p-2 border rounded" />
-              <input name="tono" value={productoEditando.tono} onChange={handleInputChange} placeholder="Tono / Número" className="p-2 border rounded" />
-              <input name="stock" type="number" value={productoEditando.stock ?? ''} onChange={handleInputChange} placeholder="Stock" className="p-2 border rounded" />
-              <input name="precioCompra" type="number" value={productoEditando.precioCompra ?? ''} onChange={handleInputChange} placeholder="Precio Compra" className="p-2 border rounded" />
-              <input name="precioVenta" type="number" value={productoEditando.precioVenta ?? ''} onChange={handleInputChange} placeholder="Precio Venta" className="p-2 border rounded" />
-              <select name="categoria" value={productoEditando.categoria} onChange={handleInputChange} className="p-2 border rounded">
-                <option value="">Selecciona una categoría</option>
-                {categorias.map((c) => (
-                  <option key={c.id} value={c.id}>{c.nombre}</option>
-                ))}
-              </select>
-              <select name="subcategoria" value={productoEditando.subcategoria} onChange={handleInputChange} className="p-2 border rounded">
-                <option value="">Selecciona una subcategoría</option>
-                {subcategoriasDisponibles.map((s, i) => (
-                  <option key={i} value={s}>{s}</option>
-                ))}
-              </select>
-              <input type="file" accept="image/*" multiple onChange={(e) => {
-                const files = Array.from(e.target.files ?? []).slice(0, 3);
-                setNuevasImagenes(files);
-              }} className="p-2 border rounded" />
-              <input type="file" accept="video/*" onChange={(e) => setNuevoVideo(e.target.files?.[0] ?? null)} className="p-2 border rounded" />
-              <button onClick={handleGuardar} className="mt-2 bg-[#D89BA4] hover:bg-[#c68793] text-white py-2 px-4 rounded">
-                Guardar Cambios
-              </button>
-            </div>
+            {EditorForm}
           </div>
         )}
       </div>
+
+      {isMobile && productoEditando && (
+        <MobileModal
+          title="Editar Producto"
+          onClose={() => setProductoEditando(null)}
+        >
+          {EditorForm}
+        </MobileModal>
+      )}
     </div>
   );
 }
